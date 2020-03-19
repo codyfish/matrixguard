@@ -30,15 +30,17 @@ class MainWindow(QtWidgets.QMainWindow):
         button_scalar_row = self.findChild(QtWidgets.QPushButton, 'button_scalar_row')
         button_scalar_all = self.findChild(QtWidgets.QPushButton, "button_scalar_all")
         button_add_row = self.findChild(QtWidgets.QPushButton, "button_add_row")
+        button_add_matrix_d = self.findChild(QtWidgets.QPushButton, "button_add_matrix_d")
 
         button_switch_row.clicked.connect(self.c_switch_row)
         button_scalar_row.clicked.connect(self.c_scalar_row)
         button_scalar_all.clicked.connect(self.c_scalar_all)
         button_add_row.clicked.connect(self.c_add_row)
+        button_add_matrix_d.clicked.connect(self.c_add_matrix)
 
-        matrix = Matrix([[1 for x in range(5)] for y in range(4)])
-        self._current_crow = CalculationRow(matrix)
-        self._calculation_layout.addWidget(self._current_crow)
+        # matrix = Matrix([[1 for x in range(5)] for y in range(4)])
+        # self._current_crow = CalculationRow(matrix)
+        # self._calculation_layout.addWidget(self._current_crow)
 
         self.show()  # Show the GUI
 
@@ -88,6 +90,14 @@ class MainWindow(QtWidgets.QMainWindow):
             print(dialog.expr)
             operation = AddRow(dialog.source, dialog.target, dialog.expr)
             self.add_operation(operation)
+
+    @pyqtSlot()
+    def c_add_matrix(self):
+        dialog = Dialogs.AddMatrixDialog()
+        if dialog.exec():
+            self._current_crow = CalculationRow(dialog.matrix)
+            self._calculation_layout.addWidget(self._current_crow)
+            self.scroll_down()
 
 
 class ScrollThread(threading.Thread):
