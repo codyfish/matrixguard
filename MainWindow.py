@@ -49,11 +49,26 @@ class MainWindow(QtWidgets.QMainWindow):
         scroller.start()
 
     def add_operation(self, operation):
+        old_matrix = self._current_crow.get_matrix_result()
         self._current_crow.add_operation(operation)
-        matrix = self._current_crow.get_matrix_result()
+        try:
+            matrix = self._current_crow.get_matrix_result()
+        except Exception as err:
+            self.error_msg(str(err))
+
+            matrix = old_matrix
         self._current_crow = CalculationRow(matrix)
         self._calculation_layout.addWidget(self._current_crow)
         self.scroll_down()
+
+    def error_msg(self, msg):
+        print(msg)
+        error_msg = QtWidgets.QMessageBox()
+        error_msg.setText("Error")
+        error_msg.setInformativeText(msg)
+        error_msg.setIcon(QtWidgets.QMessageBox.Critical)
+        error_msg.setStandardButtons(QtWidgets.QMessageBox.Ignore)
+        error_msg.exec()
 
     @pyqtSlot()
     def c_switch_row(self):
